@@ -24,11 +24,9 @@ class Transformer(nn.Module):
         self.decoder = TransformerDecoder(decoder_layer, num_decoder_layer, decoder_norm)
         self.position_encoder = PositionEmbeddingSine()
 
-    def forward(self, x, tgt, pos = True, query_pos = None):
-        if pos:
+    def forward(self, x, tgt, pos = None, build_in_pos = True, query_pos = None):
+        if build_in_pos and pos is None:
             pos = self.position_encoder(x)
-        else: 
-            pos = None
         memory = self.encoder(x, pos)
         hs = self.decoder(tgt, memory, pos, query_pos)
         return hs
